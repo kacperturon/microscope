@@ -1,0 +1,3 @@
+boto3==1.26.129
+Flask==2.3.2
+opencv_python==4.7.0.72
