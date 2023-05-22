@@ -26,6 +26,7 @@ async function takePicture(){
   const {id, url} = await resp.json();
   console.log(id, url);
   imgContainer.setAttribute('src', url);
+  imgContainer.classList = 'pb-2';
   picIdInput.value = id;
 }
 
