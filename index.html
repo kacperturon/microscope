@@ -5,28 +5,155 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha256-2Pjr1OlpZMY6qesJM68t2v39t+lMLvxwpa8QlRjJroA=" crossorigin="anonymous"></script>
+
+  <style>
+    #picImg {
+      width: 400px; 
+    }
+  </style>
+
 </head>
+
 <body>
-  <button onclick="bla()">bla</button>
-  <script>
-    const server = "http://127.0.0.1:5000";
+  <button onclick="takePicture()" id="takePicBtn" disabled>take picture</button>
+  <img src="#" id="picImg" class=""/>
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSf6OgAjepwCfIi9LPhtTNG9m4CtFEp_cUaB6Z8LdYBi_DktUA/formResponse"
+  target="_self"
+  id="bootstrapForm"
+  method="POST">
+<fieldset>
+    <h2>zboze<br><small></small></h2>
+</fieldset>
 
-    const serverOk = async () => {
-      try{
-        const resp = await fetch(`${server}/ping`);
-        const ok = await resp.text();
-        return ok === "pong";
-      }catch(e){
-        return false;
-      }
-    }
 
-    (async()=>{
+<!-- Field type: "short" id: "2050438464" -->
+<fieldset>
+    <legend for="2050438464">photo id</legend>
+    <div class="form-group">
+        <input id="2020640437" type="text" name="entry.2020640437" class="form-control" required readonly>
+    </div>
+</fieldset>
 
-    })();
-    function bla(){
-      console.log('bla');
-    }
-  </script>
+
+<!-- Field type: "dropdown" id: "957393654" -->
+<fieldset>
+    <legend for="957393654">Rodzaj zboża</legend>
+    <div class="form-group">
+        <select id="957393654" name="entry.854562294" class="form-control">
+            <option value="pszenica">pszenica</option>
+            <option value="jęczmień">jęczmień</option>
+            <option value="żyto">żyto</option>
+            <option value="przenżyto">przenżyto</option>
+            <option value="kukurydza">kukurydza</option>
+            <option value="rzepak">rzepak</option>
+        </select>
+    </div>
+</fieldset>
+
+
+<!-- Field type: "checkboxes" id: "1991476230" -->
+<fieldset>
+    <legend for="1991476230">Szkodniki</legend>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.909029091" value="wołek zbożowy" >
+                wołek zbożowy
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.909029091" value="trojszyk" >
+                trojszyk
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.909029091" value="rozpłaszczyk" >
+                rozpłaszczyk
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.909029091" value="rozkruszek" >
+                rozkruszek
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.909029091" value="wołek kukurydziany" >
+                wołek kukurydziany
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.909029091" value="__other_option__" >
+            </label>
+            <input type="text" name="entry.909029091.other_option_response" placeholder="custom value">
+        </div>
+    </div>
+</fieldset>
+
+
+<!-- Field type: "checkboxes" id: "508621328" -->
+<fieldset>
+    <legend for="508621328">Choroby</legend>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.1498885687" value="choroby grzybowe/fusarium" >
+                choroby grzybowe/fusarium
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.1498885687" value="śnieć cuchnąca" >
+                śnieć cuchnąca
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.1498885687" value="śnieć karłowa" >
+                śnieć karłowa
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="entry.1498885687" value="__other_option__" >
+            </label>
+            <input type="text" name="entry.1498885687.other_option_response" placeholder="custom value">
+        </div>
+    </div>
+</fieldset>
+
+
+<input class="btn btn-primary" type="submit" value="Submit">
+</form>
+<script src="index.js"></script>
+<script>
+$('#bootstrapForm').submit(function (event) {
+    event.preventDefault()
+    var extraData = {}
+    $('#bootstrapForm').ajaxSubmit({
+        data: extraData,
+        dataType: 'jsonp',  // This won't really work. It's just to use a GET instead of a POST to allow cookies from different domain.
+        error: function () {
+            // Submit of form should be successful but JSONP callback will fail because Google Forms
+            // does not support it, so this is handled as a failure.
+            const picIdInput = document.getElementById("2020640437");
+            
+            movePicture(picIdInput.value);
+            alert('Form Submitted. Thanks.')
+            // clearForm();
+            document.getElementById("bootstrapForm").reset();
+            // You can also redirect the user to a custom thank-you page:
+            // window.location = 'http://www.mydomain.com/thankyoupage.html'
+        }
+    })
+})
+</script>
 </body>
 </html>
