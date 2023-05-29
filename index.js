@@ -4,6 +4,29 @@ const takePicBtnContainer = document.getElementById("takePicBtn");
 const picIdInput = document.getElementById("2020640437");
 const form = document.getElementById("bootstrapForm"); 
 
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  var data = new FormData(e.target);
+  try{
+    const resp = await fetch(
+      `${e.target.action}?${new URLSearchParams(data).toString()}`,
+      {
+          method: e.target.method,
+          mode: 'no-cors',
+          headers: {
+              'Accept': 'application/json'
+          }
+      });
+    console.log(resp);
+    form.reset();
+    // movePicture(picIdInput.value);
+    alert('Pomyślnie wysłano');
+  } catch (e) {
+    console.log(e);
+  }
+
+});
+
 const serverOk = async () => {
   try{
     const resp = await fetch(`${server}/ping`, {
