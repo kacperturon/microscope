@@ -16,7 +16,7 @@ S3 = boto3.resource('s3')
 
 
 @app.route("/ping")
-def ping_pong() -> str:
+def ping_pong():
     return "pong"
 
 
@@ -26,7 +26,7 @@ def upload_logs_S3():
 
 
 @app.route("/pic")
-def upload_pic_S3() -> str:
+def upload_pic_S3():
     (image_name, file_location) = take_pic()
     url = upload_file_S3(file_location, image_name)
     return jsonify(
@@ -36,7 +36,7 @@ def upload_pic_S3() -> str:
 
 
 @app.route("/pic/<pic_id>/move")
-def move_pic_S3(pic_id) -> str:
+def move_pic_S3(pic_id):
     copy_source = {
         'Bucket': BUCKET_S3,
         'Key': f"{PICTURES_TEMP_FOLDER}/{pic_id}"
@@ -47,7 +47,7 @@ def move_pic_S3(pic_id) -> str:
     return "ok"
 
 
-def take_pic(pictures_folder=PICTURES_FOLDER) -> tuple[str, str] | None:
+def take_pic(pictures_folder=PICTURES_FOLDER):
     CAM = cv2.VideoCapture(CAM_PORT)
     result, image = CAM.read()
     CAM = None
@@ -67,7 +67,7 @@ def take_pic(pictures_folder=PICTURES_FOLDER) -> tuple[str, str] | None:
         pass
 
 
-def upload_file_S3(file_location, filename, bucket=BUCKET_S3) -> None:
+def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
     print(file_location)
     print(filename)
     uploaded = CLIENT_S3.upload_file(

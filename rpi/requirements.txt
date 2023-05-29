@@ -1,3 +1,4 @@
-boto3==1.26.129
-Flask==2.3.2
-opencv_python==4.7.0.72
+boto3>=1.26
+Flask>=2.3.2
+Flask-Cors>=3
+opencv-python>=4.7
