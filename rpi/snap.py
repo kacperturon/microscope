@@ -1,11 +1,13 @@
 import boto3
 import cv2
 import time
-from flask import Flask, jsonify, Response
+from flask import Flask, jsonify
 from flask_cors import CORS
+import json
+import socket
+from urllib.request import urlopen
 
-app = Flask(__name__)
-CORS(app)
+
 CAM_PORT = 0
 CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 BUCKET_S3 = 'microscope-grain'
@@ -15,36 +17,60 @@ BUCKET_ROOT_URL_S3 = 'https://microscope-grain.s3.eu-central-1.amazonaws.com'
 S3 = boto3.resource('s3')
 
 
-@app.route("/ping")
-def ping_pong():
-    return "pong"
+def create_app():
+    app = Flask(__name__)
+    CORS(app)
+
+    @app.route("/ping")
+    def ping_pong():
+        return "pong"
+
+    @app.route("/upload/logs")
+    def upload_logs_S3():
+        pass
+
+    @app.route("/pic")
+    def upload_pic_S3():
+        (image_name, file_location) = take_pic()
+        url = upload_file_S3(file_location, image_name)
+        return jsonify(
+            id=image_name,
+            url=url
+        )
+
+    @app.route("/pic/<pic_id>/move")
+    def move_pic_S3(pic_id):
+        copy_source = {
+            'Bucket': BUCKET_S3,
+            'Key': f"{PICTURES_TEMP_FOLDER}/{pic_id}"
+        }
+        S3.meta.client.copy(copy_source, BUCKET_S3,
+                            f"{PICTURES_FOLDER}/{pic_id}")
+        S3.meta.client.delete_object(
+            Bucket=copy_source["Bucket"], Key=copy_source["Key"])
+        return "ok"
+
+    return app
 
 
-@app.route("/upload/logs")
-def upload_logs_S3():
-    pass
+def internet_on():
+    try:
+        response = urlopen('https://www.google.com/', timeout=10)
+        return True
+    except:
+        return False
 
 
-@app.route("/pic")
-def upload_pic_S3():
-    (image_name, file_location) = take_pic()
-    url = upload_file_S3(file_location, image_name)
-    return jsonify(
-        id=image_name,
-        url=url
-    )
+def update_config_S3():
+    s3object = S3.Object(BUCKET_S3, 'config.json')
 
-
-@app.route("/pic/<pic_id>/move")
-def move_pic_S3(pic_id):
-    copy_source = {
-        'Bucket': BUCKET_S3,
-        'Key': f"{PICTURES_TEMP_FOLDER}/{pic_id}"
+    data = {
+        "server_local_ip": socket.gethostbyname(socket.getfqdn())
     }
-    S3.meta.client.copy(copy_source, BUCKET_S3, f"{PICTURES_FOLDER}/{pic_id}")
-    S3.meta.client.delete_object(
-        Bucket=copy_source["Bucket"], Key=copy_source["Key"])
-    return "ok"
+
+    s3object.put(
+        Body=(bytes(json.dumps(data).encode('UTF-8')))
+    )
 
 
 def take_pic(pictures_folder=PICTURES_FOLDER):
@@ -80,3 +106,6 @@ def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
     #     pass
     # else:
     return f"{BUCKET_ROOT_URL_S3}/{PICTURES_TEMP_FOLDER}/{filename}"
+
+
+create_app()

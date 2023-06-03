@@ -1,8 +1,20 @@
 const server = "http://127.0.0.1:5000";
+// let server = "http://192.168.1.171:5000";
+
 const imgContainer = document.getElementById("picImg");
 const takePicBtnContainer = document.getElementById("takePicBtn");
 const picIdInput = document.getElementById("2020640437");
 const form = document.getElementById("bootstrapForm"); 
+
+
+const getConfigS3 = async() => {
+  const resp = await fetch(
+    `https://microscope-grain.s3.eu-central-1.amazonaws.com/config.json`);
+  data = await resp.json();
+  server = `http://${data['server_local_ip']}:5000`;
+
+}
+getConfigS3();
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
