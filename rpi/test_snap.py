@@ -1,6 +1,3 @@
-import os
-import tempfile
-
 import pytest
 
 from snap import create_app
@@ -16,7 +13,7 @@ def client():
             yield client
 
 
-def test_empty_db(client):
+def test_pong(client):
     """Start with a blank database."""
 
     rv = client.get('/ping')

@@ -7,9 +7,8 @@ apt-get -y install libatlas-base-dev
 python -m pip install -vI --prefer-binary -r requirements.txt
 mkdir -p ./pictures
 mkdir -p ~/.aws
-echo "[default]
-aws_access_key_id = AKIATFY4RCWECS3SFNNE
-aws_secret_access_key = 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" > ~/.aws/credentials
+
 # python -m flask --app snap run --host=0.0.0.0
 # crontab -e
-# 
+# ngrok http 500
+# ngrok tcp 22
