@@ -1,5 +1,4 @@
 import pytest
-
 from snap import create_app
 
 
@@ -14,7 +13,5 @@ def client():
 
 
 def test_pong(client):
-    """Start with a blank database."""
-
     rv = client.get('/ping')
     assert b'pong' in rv.data

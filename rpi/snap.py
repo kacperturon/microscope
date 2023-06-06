@@ -3,12 +3,9 @@ import cv2
 import time
 from flask import Flask, jsonify
 from flask_cors import CORS
-import json
-import socket
-from urllib.request import urlopen
 import logging
 
-logging.basicConfig(filename='snap.log', level=logging.DEBUG)
+logging.basicConfig(filename='snap.log', level=logging.info)
 # logging.[debug | info | warning]
 
 CAM_PORT = 0
