@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import logging
 
-logging.basicConfig(filename='snap.log', level=logging.info)
+logging.basicConfig(filename='snap.log', level=20)
 # logging.[debug | info | warning]
 
 CAM_PORT = 0
