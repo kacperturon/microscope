@@ -29,10 +29,10 @@ def create_app():
     def upload_pic_S3():
         (image_name, file_location) = take_pic()
         if image_name is None:
-            return 500
+            return "", 500
         url = upload_file_S3(file_location, image_name)
         if url is None:
-            return 500
+            return "", 500
         return jsonify(
             id=image_name,
             url=url
@@ -52,8 +52,8 @@ def create_app():
         except:
             logging.warning(
                 f"Could not copy file from: {copy_source} to: {PICTURES_FOLDER}/{pic_id} or delete {copy_source['Key']}")
-            return 500
-        return 200
+            return "", 500
+        return "", 200
 
     return app
 

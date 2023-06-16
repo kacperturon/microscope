@@ -1,20 +1,11 @@
-const server = "http://127.0.0.1:5000";
-// let server = "http://192.168.1.171:5000";
+const server = "https://5cce-165-120-47-15.ngrok-free.app";
+// const server = "http://192.168.1.154:5000";
 
 const imgContainer = document.getElementById("picImg");
 const takePicBtnContainer = document.getElementById("takePicBtn");
 const picIdInput = document.getElementById("2020640437");
 const form = document.getElementById("bootstrapForm"); 
 
-
-const getConfigS3 = async() => {
-  const resp = await fetch(
-    `https://microscope-grain.s3.eu-central-1.amazonaws.com/config.json`);
-  data = await resp.json();
-  server = `http://${data['server_local_ip']}:5000`;
-
-}
-getConfigS3();
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -26,12 +17,13 @@ form.addEventListener("submit", async (e) => {
           method: e.target.method,
           mode: 'no-cors',
           headers: {
-              'Accept': 'application/json'
+              'Accept': 'application/json',
           }
       });
-    console.log(resp);
+    await movePicture(picIdInput.value);
     form.reset();
-    // movePicture(picIdInput.value);
+    imgContainer.setAttribute('src', '#');
+    imgContainer.classList = 'hidden';
     alert('Pomyślnie wysłano');
   } catch (e) {
     console.log(e);
@@ -44,6 +36,9 @@ const serverOk = async () => {
     const resp = await fetch(`${server}/ping`, {
       method: "GET", 
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      headers: {
+        'ngrok-skip-browser-warning': 'noop',
+      }
     }
       );
     const ok = await resp.text();
@@ -54,7 +49,11 @@ const serverOk = async () => {
 }
 
 async function takePicture(){
-  const resp = await fetch(`${server}/pic`);
+  const resp = await fetch(`${server}/pic`, {
+    headers: {
+      'ngrok-skip-browser-warning': 'noop',
+    }
+  });
   const {id, url} = await resp.json();
   imgContainer.setAttribute('src', url);
   imgContainer.classList = 'pb-2';
@@ -62,15 +61,11 @@ async function takePicture(){
 }
 
 async function movePicture(picId){
-  const resp = await fetch(`${server}/pic/${picId}/move`);
+  const resp = await fetch(`${server}/pic/${picId}/move`, {
+    headers: {
+      'ngrok-skip-browser-warning': 'noop',
+    }
+  });
 }
 
-// (async()=>{
-//   let serverChecker = setInterval(async()=>{
-//     if(await serverOk()){
-//       console.log('server ok');
-//       clearInterval(serverChecker);
-//       takePicBtnContainer.disabled = false;
-//     }
-//   }, 1000);
-// })();
+serverOk();
