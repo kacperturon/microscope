@@ -1,14 +1,17 @@
-const server = "https://5cce-165-120-47-15.ngrok-free.app";
+const server = "https://398f-165-120-47-15.ngrok-free.app";
 // const server = "http://192.168.1.154:5000";
 
 const imgContainer = document.getElementById("picImg");
 const takePicBtnContainer = document.getElementById("takePicBtn");
 const picIdInput = document.getElementById("2020640437");
 const form = document.getElementById("bootstrapForm"); 
+const szkodnikiCheckboxes = document.getElementById('szkodniki');
+const chorobyCheckboxes = document.getElementById('choroby');
 
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if(!validForm()) return;
   var data = new FormData(e.target);
   try{
     const resp = await fetch(
@@ -30,6 +33,29 @@ form.addEventListener("submit", async (e) => {
   }
 
 });
+
+const validForm = () => {
+  let message = "";
+  let valid = true;
+  if(picIdInput.value == "") {
+    message += `Zrob zdjecie przed wyslaniem formy`;
+    valid = false;
+  }
+  if(Array.from(szkodnikiCheckboxes.querySelectorAll("input[type=checkbox]")).some(
+    checkbox => checkbox.checked
+  )) {
+    message += `Przynajmniej jedno pole musi byc zaznaczone w szkodnikach`
+    valid = false;
+  }
+  if(Array.from(szkodnikiCheckboxes.querySelectorAll("input[type=checkbox]")).some(
+    checkbox => checkbox.checked
+  )) {
+    message += `Przynajmniej jedno pole musi byc zaznaczone w szkodnikach`
+    valid = false;
+  }
+  alert(message);
+  return valid;
+}
 
 const serverOk = async () => {
   try{

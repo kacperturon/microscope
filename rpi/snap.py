@@ -38,6 +38,17 @@ def create_app():
             url=url
         )
 
+    @app.route("/pic/<pic_id>/delete")
+    def delete_pic_S3(pic_id):
+        copy_source = {
+            'Bucket': BUCKET_S3,
+            'Key': f"{PICTURES_TEMP_FOLDER}/{pic_id}"
+        }
+        deleted = S3.meta.client.delete_object(
+            Bucket=copy_source["Bucket"], Key=copy_source["Key"])
+        logging.warning(deleted)
+        return "", 200
+
     @app.route("/pic/<pic_id>/move")
     def move_pic_S3(pic_id):
         copy_source = {
@@ -49,7 +60,8 @@ def create_app():
                                 f"{PICTURES_FOLDER}/{pic_id}")
             S3.meta.client.delete_object(
                 Bucket=copy_source["Bucket"], Key=copy_source["Key"])
-        except:
+        except Exception as e:
+            logging.warning(e)
             logging.warning(
                 f"Could not copy file from: {copy_source} to: {PICTURES_FOLDER}/{pic_id} or delete {copy_source['Key']}")
             return "", 500
