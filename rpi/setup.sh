@@ -15,9 +15,12 @@ wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-arm.zip
 unzip ngrok-v3-stable-linux-arm.zip
 sudo cp ngrok /usr/bin/ngrok
 cd ~/microscope/rpi
+
+# MANUAL:
 # replace token in ngrok.conf
 # cat ngrok.conf >> ~/.config/ngrok/ngrok.yml
 # echo "aws credentials" >> ~/.aws/credentials
 # killall ngrok
 # sudo echo "sh ~/microscope/rpi/startup.sh" > /etc/rc.local
-# @reboot sh ~/microscope/rpi/startup.sh
+# crontab -e
+# cd /home/micro/microscope/rpi && @reboot sh home/micro/microscope/rpi/startup.sh
