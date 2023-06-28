@@ -72,6 +72,7 @@ def create_app():
 
 def take_pic(pictures_folder=PICTURES_FOLDER):
     CAM = cv2.VideoCapture(CAM_PORT)
+    time.sleep(0.5)
     result, image = CAM.read()
     # unload CAM so the microscope display can access data
     CAM = None

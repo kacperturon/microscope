@@ -1,4 +1,4 @@
-const server = "https://e02b-165-120-47-15.ngrok-free.app/";
+const server = "https://e02b-165-120-47-15.ngrok-free.app";
 // const server = "http://192.168.1.154:5000";
 
 const imgContainer = document.getElementById("picImg");
