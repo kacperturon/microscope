@@ -17,6 +17,8 @@ sudo cp ngrok /usr/bin/ngrok
 cd ~/microscope/rpi
 
 # MANUAL:
+# replace /etc/wpa_supplicant/wpa_supplicant.conf with 
+# echo "wpa_supplicant" >> /etc/wpa_supplicant/wpa_supplicant.conf
 # replace token in ngrok.conf
 # cat ngrok.conf >> ~/.config/ngrok/ngrok.yml
 # echo "aws credentials" >> ~/.aws/credentials
