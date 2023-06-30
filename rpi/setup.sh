@@ -17,14 +17,12 @@ unzip ngrok-v3-stable-linux-arm.zip
 sudo cp ngrok /usr/bin/ngrok
 cd ~/microscope/rpi
 
-# MANUAL:
-# replace /etc/wpa_supplicant/wpa_supplicant.conf with 
-# echo "wpa_supplicant" >> /etc/wpa_supplicant/wpa_supplicant.conf
+# STEPS:
+# replace /etc/wpa_supplicant/wpa_supplicant.conf with wpa_supplicant.conf
 # sudo wpa_cli -i wlan0 reconfigure
-# replace token in ngrok.conf
-# echo "ngrok.conf" >>  ~/.config/ngrok/ngrok.yml
-# echo "aws credentials" >> ~/.aws/credentials
-# sudo echo "sh /home/micro/microscope/rpi/startup.sh" > /etc/rc.local
+# replace token in ngrok.conf and:
+#   echo "ngrok.conf" >>  ~/.config/ngrok/ngrok.yml
+# copy and execute aws_credentials.txt
 # crontab -e
 # @reboot cd /home/micro/microscope/rpi && sh /home/micro/microscope/rpi/startup.sh
 
