@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Forma zboża</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -18,125 +18,131 @@
 
 </head>
 
-<body class="py-5 flex flex-col items-center">
-    <div class="" id="wrapper">
-        <img src="#" id="picImg" class="hidden" />
+<body class="flex flex-col items-center bg-slate-50">
+    <div class="flex flex-col h-screen justify-between" id="wrapper">
+        <div class="py-8">
 
-        <div class="flex flex-col items-end w-full">
+            <img src="#" id="picImg" class="hidden" />
+
+            <form
+                action="https://docs.google.com/forms/d/e/1FAIpQLSf6OgAjepwCfIi9LPhtTNG9m4CtFEp_cUaB6Z8LdYBi_DktUA/formResponse"
+                target="_self" id="bootstrapForm" method="GET">
+
+                <!-- Field type: "short" id: "2050438464" -->
+                <fieldset class="mb-2.5">
+                    <legend for="2050438464" class="text-xl">id zdjęcia</legend>
+                    <div class="form-group flex flex-row">
+                        <input id="2020640437" type="text" name="entry.2020640437" class="form-control border flex-1"
+                            readonly>
+                        <button class="border px-1.5 py-1 bg-white" onclick="takePicture()" type="button"
+                            id="takePicBtn">Zrób
+                            zdjęcie</button>
+                    </div>
+                </fieldset>
+
+
+                <!-- Field type: "dropdown" id: "957393654" -->
+                <fieldset class="mb-2.5">
+                    <legend for="957393654" class="text-xl">Rodzaj zboża</legend>
+                    <div class="form-group">
+                        <select id="957393654" name="entry.854562294" class="form-control border py-1 px-1">
+                            <option value="pszenica">pszenica</option>
+                            <option value="jęczmień">jęczmień</option>
+                            <option value="żyto">żyto</option>
+                            <option value="przenżyto">przenżyto</option>
+                            <option value="kukurydza">kukurydza</option>
+                            <option value="rzepak">rzepak</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+
+                <!-- Field type: "checkboxes" id: "1991476230" -->
+                <fieldset class="mb-2.5" id="szkodniki">
+                    <legend for="1991476230" class="text-xl">Szkodniki</legend>
+                    <div class="form-group">
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.909029091" value="wołek zbożowy">
+                                wołek zbożowy
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.909029091" value="trojszyk">
+                                trojszyk
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.909029091" value="rozpłaszczyk">
+                                rozpłaszczyk
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.909029091" value="rozkruszek">
+                                rozkruszek
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.909029091" value="wołek kukurydziany">
+                                wołek kukurydziany
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.909029091" value="__other_option__">
+                            </label>
+                            <input type="text" class="flex-1" name="entry.909029091.other_option_response"
+                                placeholder=" inne.. np. rozkruszek, rozpłaszczyk">
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                <!-- Field type: "checkboxes" id: "508621328" -->
+                <fieldset class="mb-2.5" id="choroby">
+                    <legend for="508621328" class="text-xl">Choroby</legend>
+                    <div class="form-group">
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.1498885687" value="choroby grzybowe/fusarium">
+                                choroby grzybowe/fusarium
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.1498885687" value="śnieć cuchnąca">
+                                śnieć cuchnąca
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label>
+                                <input type="checkbox" name="entry.1498885687" value="śnieć karłowa">
+                                śnieć karłowa
+                            </label>
+                        </div>
+                        <div class="checkbox w-full flex">
+                            <label class="">
+                                <input type="checkbox" class="" name="entry.1498885687" value="__other_option__">
+                            </label>
+                            <input type="text" class="flex-1" name="entry.1498885687.other_option_response"
+                                placeholder=" inne.. np. śnieć, fusarium">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="flex flex-col items-center mt-5">
+                    <input class="border px-1.5 py-1 w-full bg-white" type="submit" value="Wyślij">
+                </div>
+            </form>
         </div>
-        <form
-            action="https://docs.google.com/forms/d/e/1FAIpQLSf6OgAjepwCfIi9LPhtTNG9m4CtFEp_cUaB6Z8LdYBi_DktUA/formResponse"
-            target="_self" id="bootstrapForm" method="GET">
 
-            <!-- Field type: "short" id: "2050438464" -->
-            <fieldset class="mb-2">
-                <legend for="2050438464" class="text-xl">id zdjęcia</legend>
-                <div class="form-group flex flex-row">
-                    <input id="2020640437" type="text" name="entry.2020640437" class="form-control border flex-1"
-                        readonly>
-                    <button class="border px-1.5 py-1" onclick="takePicture()" type="button" id="takePicBtn">Zrób
-                        zdjęcie</button>
-                </div>
-            </fieldset>
-
-
-            <!-- Field type: "dropdown" id: "957393654" -->
-            <fieldset class="mb-2">
-                <legend for="957393654" class="text-xl">Rodzaj zboża</legend>
-                <div class="form-group">
-                    <select id="957393654" name="entry.854562294" class="form-control">
-                        <option value="pszenica">pszenica</option>
-                        <option value="jęczmień">jęczmień</option>
-                        <option value="żyto">żyto</option>
-                        <option value="przenżyto">przenżyto</option>
-                        <option value="kukurydza">kukurydza</option>
-                        <option value="rzepak">rzepak</option>
-                    </select>
-                </div>
-            </fieldset>
-
-
-            <!-- Field type: "checkboxes" id: "1991476230" -->
-            <fieldset class="mb-2" id="szkodniki">
-                <legend for="1991476230" class="text-xl">Szkodniki</legend>
-                <div class="form-group">
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.909029091" value="wołek zbożowy">
-                            wołek zbożowy
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.909029091" value="trojszyk">
-                            trojszyk
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.909029091" value="rozpłaszczyk">
-                            rozpłaszczyk
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.909029091" value="rozkruszek">
-                            rozkruszek
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.909029091" value="wołek kukurydziany">
-                            wołek kukurydziany
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.909029091" value="__other_option__">
-                        </label>
-                        <input type="text" class="flex-1" name="entry.909029091.other_option_response"
-                            placeholder=" inne.. np. rozkruszek, rozpłaszczyk">
-                    </div>
-                </div>
-            </fieldset>
-
-
-            <!-- Field type: "checkboxes" id: "508621328" -->
-            <fieldset class="mb-2" id="choroby">
-                <legend for="508621328" class="text-xl">Choroby</legend>
-                <div class="form-group">
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.1498885687" value="choroby grzybowe/fusarium">
-                            choroby grzybowe/fusarium
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.1498885687" value="śnieć cuchnąca">
-                            śnieć cuchnąca
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label>
-                            <input type="checkbox" name="entry.1498885687" value="śnieć karłowa">
-                            śnieć karłowa
-                        </label>
-                    </div>
-                    <div class="checkbox w-full flex">
-                        <label class="">
-                            <input type="checkbox" class="" name="entry.1498885687" value="__other_option__">
-                        </label>
-                        <input type="text" class="flex-1" name="entry.1498885687.other_option_response"
-                            placeholder=" inne.. np. śnieć, fusarium">
-                    </div>
-                </div>
-            </fieldset>
-
-            <div class="flex flex-col items-center mt-5">
-                <input class="border px-1.5 py-1 w-full" type="submit" value="Wyślij">
-            </div>
-        </form>
+        <p class="pb-8 italic text-slate-500">W razie problemów lub pytań proszę pisać do <a
+                href="mailto:kacperturon@gmail.com?subject=Pytanie dotyczące formy zboża"
+                class="text-cyan-600">kacperturon@gmail.com</a></p>
     </div>
 
     <script src="index.js"></script>

@@ -21,6 +21,10 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
+    CAM = cv2.VideoCapture(CAM_PORT)
+    time.sleep(0.5)
+    CAM.read()
+
     @app.route("/ping")
     def ping_pong():
         return "pong"
