@@ -1,0 +1,1 @@
+pgrep -f flask | xargs kill

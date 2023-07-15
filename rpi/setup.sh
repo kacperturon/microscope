@@ -29,3 +29,5 @@ cd ~/microscope/rpi
 # EXTRAS:
 # killall ngrok
 # sudo reboot
+# sudo dd if=./microscope16shrink.img of=/dev/sdc bs=32M status=progress
+# sudo dd bs=4M if=/dev/sdc of=/home/username/MyImage.img status=progress

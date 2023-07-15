@@ -4,11 +4,14 @@ import time
 from flask import Flask, jsonify
 from flask_cors import CORS
 import logging
+from picamera2 import Picamera2
 
 logging.basicConfig(filename='snap.log', level=20)
 # logging.[debug | info | warning]
 
 CAM_PORT = 0
+PI_CAM_ENABLED = False
+PI_CAM = Picamera2()
 CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 BUCKET_S3 = 'microscope-grain'
 PICTURES_TEMP_FOLDER = 'temp'
@@ -75,12 +78,19 @@ def create_app():
 
 
 def take_pic(pictures_folder=PICTURES_FOLDER):
-    CAM = cv2.VideoCapture(CAM_PORT)
-    time.sleep(0.5)
-    result, image = CAM.read()
-    # unload CAM so the microscope display can access data
-    CAM = None
-    if result:
+    image = None
+    if PI_CAM_ENABLED is True:
+        PI_CAM.start()
+        image = PI_CAM.capture_array()
+        PI_CAM.stop()
+    else:
+        CAM = cv2.VideoCapture(CAM_PORT)
+        time.sleep(0.5)
+        _, image = CAM.read()
+        # unload CAM so the microscope display can access data
+        CAM.release()
+        CAM = None
+    if image is not None:
         time_str = time.strftime("%Y%m%d-%H%M%S")
         image_name = f"{time_str}.jpg"
         file_location = f"./{pictures_folder}/{image_name}"
@@ -107,4 +117,22 @@ def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
     return f"{BUCKET_ROOT_URL_S3}/{PICTURES_TEMP_FOLDER}/{filename}"
 
 
-create_app()
+def returnCameraIndexes():
+    # checks the first 10 indexes.
+    index = 0
+    arr = []
+    i = 10
+    while i > 0:
+        cap = cv2.VideoCapture(index)
+        if cap.read()[0]:
+            arr.append(index)
+            cap.release()
+        index += 1
+        i -= 1
+    return arr
+
+
+if __name__ == 'snap':
+    logging.info(f"Available cameras: {returnCameraIndexes()}")
+    logging.info(f"PI CAM ENABLED: {PI_CAM_ENABLED}")
+    app = create_app()
