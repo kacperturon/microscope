@@ -1,5 +1,10 @@
-const server = "https://e02b-165-120-47-15.ngrok-free.app";
+const server = "https://1113-2a02-a312-c546-6180-530d-bf05-30b0-31ec.ngrok-free.app";
 // const server = "http://192.168.1.154:5000";
+
+const version = `0.01.00`;
+
+const formURLProd = "https://docs.google.com/forms/d/e/1FAIpQLSf6OgAjepwCfIi9LPhtTNG9m4CtFEp_cUaB6Z8LdYBi_DktUA/formResponse";
+const formURLDev = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfK8NX00r2Y89e2eWiJiwGpJrPwvQ4ZMTlZSZvFjwYuaX23uQ/formResponse";
 
 const imgContainer = document.getElementById("picImg");
 const takePicBtnContainer = document.getElementById("takePicBtn");
@@ -8,7 +13,6 @@ const form = document.getElementById("bootstrapForm");
 const szkodnikiCheckboxes = document.getElementById('szkodniki');
 const chorobyCheckboxes = document.getElementById('choroby');
 const checkboxQuerySelector = "input[type=checkbox]";
-
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -32,7 +36,6 @@ form.addEventListener("submit", async (e) => {
   } catch (e) {
     console.log(e);
   }
-
 });
 
 const validForm = () => {
@@ -100,4 +103,19 @@ async function movePicture(picId){
   });
 }
 
-serverOk();
+async function init() {
+  const resp = await fetch(`${server}/env`, {
+    headers: {
+      'ngrok-skip-browser-warning': 'noop',
+    }
+  });
+  const env = await resp.text();
+  const serverRunning = await serverOk(); 
+
+  form.setAttribute('action', env === 'prod' ? formURLProd : formURLDev);
+
+  console.info(`Server is running: ${serverRunning}`);
+  console.info(`Environment: ${env}\nVersion: ${version}`);
+}
+
+init();

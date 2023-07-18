@@ -5,18 +5,24 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import logging
 from picamera2 import Picamera2
+import os
 
 logging.basicConfig(filename='snap.log', level=20)
 # logging.[debug | info | warning]
+
+VERSION = "0.01.00"
+ENVIRONMENT = os.getenv('SNAP_ENV') or 'dev'
+
+BUCKET_S3_PROD = 'microscope-grain'
+BUCKET_S3_DEV = 'microscope-grain-dev'
+BUCKET_S3 = None
 
 CAM_PORT = 0
 PI_CAM_ENABLED = False
 PI_CAM = Picamera2()
 CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
-BUCKET_S3 = 'microscope-grain'
 PICTURES_TEMP_FOLDER = 'temp'
 PICTURES_FOLDER = 'pictures'
-BUCKET_ROOT_URL_S3 = 'https://microscope-grain.s3.eu-central-1.amazonaws.com'
 S3 = boto3.resource('s3')
 
 
@@ -27,6 +33,10 @@ def create_app():
     CAM = cv2.VideoCapture(CAM_PORT)
     time.sleep(0.5)
     CAM.read()
+
+    @app.route('/env')
+    def environment():
+        return ENVIRONMENT
 
     @app.route("/ping")
     def ping_pong():
@@ -113,8 +123,7 @@ def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
         logging.warning(
             f"Could not upload file to S3: {PICTURES_TEMP_FOLDER}/{filename} bucket: {bucket} from {file_location}")
         return None
-
-    return f"{BUCKET_ROOT_URL_S3}/{PICTURES_TEMP_FOLDER}/{filename}"
+    return f"https://{BUCKET_S3}.s3.eu-central-1.amazonaws.com/{PICTURES_TEMP_FOLDER}/{filename}"
 
 
 def returnCameraIndexes():
@@ -133,6 +142,9 @@ def returnCameraIndexes():
 
 
 if __name__ == 'snap':
+    logging.info('Server started')
+    logging.info(f'Environment: {ENVIRONMENT}\nVersion: {VERSION}')
     logging.info(f"Available cameras: {returnCameraIndexes()}")
-    logging.info(f"PI CAM ENABLED: {PI_CAM_ENABLED}")
+    logging.info(f"PI cam enabled: {PI_CAM_ENABLED}")
+    BUCKET_S3 = BUCKET_S3_PROD if ENVIRONMENT is 'prod' else BUCKET_S3_DEV
     app = create_app()
