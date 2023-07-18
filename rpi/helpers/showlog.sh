@@ -1,1 +1,1 @@
-tail -f ../snap.log
+tail -f /home/micro/microscope/rpi/snap.log

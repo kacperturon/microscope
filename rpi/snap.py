@@ -1,29 +1,37 @@
-import boto3
 import cv2
+import boto3
+import os
+import logging
 import time
+from zoneinfo import ZoneInfo
+from datetime import datetime
 from flask import Flask, jsonify
 from flask_cors import CORS
-import logging
 from picamera2 import Picamera2
-import os
 
 logging.basicConfig(filename='snap.log', level=20)
 # logging.[debug | info | warning]
 
 VERSION = "0.01.00"
 ENVIRONMENT = os.getenv('SNAP_ENV') or 'dev'
+TIME_ZONE = "Europe/Warsaw"
 
+BUCKET_S3 = ""
 BUCKET_S3_PROD = 'microscope-grain'
 BUCKET_S3_DEV = 'microscope-grain-dev'
-BUCKET_S3 = None
-
-CAM_PORT = 0
-PI_CAM_ENABLED = False
-PI_CAM = Picamera2()
-CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 PICTURES_TEMP_FOLDER = 'temp'
 PICTURES_FOLDER = 'pictures'
+
 S3 = boto3.resource('s3')
+CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
+
+
+CAM_PORT = 0
+PI_CAM_ENABLED = True
+PI_CAM = Picamera2()
+PI_CAM.create_still_configuration()
+# PI_CAM.controls.ExposureTime = 10000
+# PI_CAM.controls.AnalogueGain = 1.0
 
 
 def create_app():
@@ -47,7 +55,7 @@ def create_app():
         (image_name, file_location) = take_pic()
         if image_name is None:
             return "", 500
-        url = upload_file_S3(file_location, image_name)
+        url = upload_file_S3(file_location, image_name, BUCKET_S3)
         if url is None:
             return "", 500
         return jsonify(
@@ -91,6 +99,7 @@ def take_pic(pictures_folder=PICTURES_FOLDER):
     image = None
     if PI_CAM_ENABLED is True:
         PI_CAM.start()
+        time.sleep(1)
         image = PI_CAM.capture_array()
         PI_CAM.stop()
     else:
@@ -101,7 +110,7 @@ def take_pic(pictures_folder=PICTURES_FOLDER):
         CAM.release()
         CAM = None
     if image is not None:
-        time_str = time.strftime("%Y%m%d-%H%M%S")
+        time_str = datetime.now(ZoneInfo(TIME_ZONE)).strftime('%Y%m%d-%H%M%S')
         image_name = f"{time_str}.jpg"
         file_location = f"./{pictures_folder}/{image_name}"
         saved = cv2.imwrite(file_location, image)
@@ -142,9 +151,15 @@ def returnCameraIndexes():
 
 
 if __name__ == 'snap':
+    if ENVIRONMENT == 'prod':
+        BUCKET_S3 = BUCKET_S3_PROD
+    else:
+        BUCKET_S3 = BUCKET_S3_DEV
+    logging.info('--------------------------------------------')
     logging.info('Server started')
-    logging.info(f'Environment: {ENVIRONMENT}\nVersion: {VERSION}')
+    logging.info(f'Environment: {ENVIRONMENT}')
+    logging.info(f'Version: {VERSION}')
     logging.info(f"Available cameras: {returnCameraIndexes()}")
     logging.info(f"PI cam enabled: {PI_CAM_ENABLED}")
-    BUCKET_S3 = BUCKET_S3_PROD if ENVIRONMENT is 'prod' else BUCKET_S3_DEV
+    logging.info(f"Bucket set to: {BUCKET_S3}")
     app = create_app()

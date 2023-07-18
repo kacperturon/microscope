@@ -1,4 +1,4 @@
-const server = "https://1113-2a02-a312-c546-6180-530d-bf05-30b0-31ec.ngrok-free.app";
+const server = "https://f24a-2a02-a312-c546-6180-f097-f97b-3422-5944.ngrok-free.app";
 // const server = "http://192.168.1.154:5000";
 
 const version = `0.01.00`;

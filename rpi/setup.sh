@@ -1,10 +1,12 @@
 #!/bin/sh
 
+# sudo apt-get update
+# sudo apt-get install git -y
 # git clone https://www.github.com/kacperturon/microscope.git
 # cd microscope/rpi
 # chmod +x setup.sh startup.sh
+# chmod +x -R helpers/
 python -m pip install --upgrade pip
-apt-get update
 sudo apt-get -y install libatlas-base-dev
 python -m pip install --no-cache-dir --prefer-binary -r requirements.txt
 mkdir -p ./pictures
@@ -25,6 +27,7 @@ cd ~/microscope/rpi
 # copy and execute aws_credentials.txt
 # crontab -e
 # @reboot cd /home/micro/microscope/rpi && sh /home/micro/microscope/rpi/startup.sh
+# add environment variables to /etc/environment & reset ssh call
 
 # EXTRAS:
 # killall ngrok
