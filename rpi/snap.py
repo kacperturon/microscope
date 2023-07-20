@@ -25,7 +25,7 @@ PICTURES_FOLDER = 'pictures'
 S3 = boto3.resource('s3')
 CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 
-CAM_PORT = os.getenv('SNAP_CAM_PORT') or 1
+CAM_PORT = 0
 PI_CAM_ENABLED = False
 PI_CAM = None
 
