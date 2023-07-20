@@ -115,7 +115,7 @@ async function init() {
       'ngrok-skip-browser-warning': 'noop',
     }
   });
-  const cameraWorking = await resp.text();
+  const cameraWorking = await resp2.text();
   const serverRunning = await serverOk(); 
 
   form.setAttribute('action', env === 'prod' ? formURLProd : formURLDev);

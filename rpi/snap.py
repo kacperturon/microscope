@@ -47,7 +47,7 @@ def create_app():
 
     @app.route('/camconnected')
     def camera_working():
-        return {camera_connected()}
+        return f"{camera_connected()}"
 
     @app.route("/ping")
     def ping_pong():
@@ -127,12 +127,12 @@ def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
 
 
 def capture_picture():
+    image = None
     if PI_CAM_ENABLED is True:
         PI_CAM.start()
         time.sleep(1)
         image = PI_CAM.capture_array()
         PI_CAM.stop()
-        return image
     else:
         CAM = cv2.VideoCapture(CAM_PORT)
         time.sleep(0.5)
@@ -140,7 +140,7 @@ def capture_picture():
         # unload CAM so the microscope display can access data
         CAM.release()
         CAM = None
-        return image
+    return image
 
 
 def camera_connected():
