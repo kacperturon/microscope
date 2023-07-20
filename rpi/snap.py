@@ -27,8 +27,8 @@ CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 
 CAM_PORT = os.getenv('SNAP_CAM_PORT') or 1
 PI_CAM_ENABLED = False
-PI_CAM = Picamera2()
-PI_CAM.create_still_configuration()
+PI_CAM = None
+
 # PI_CAM.controls.ExposureTime = 10000
 # PI_CAM.controls.AnalogueGain = 1.0
 
@@ -103,7 +103,7 @@ def take_pic(pictures_folder=PICTURES_FOLDER):
         PI_CAM.stop()
     else:
         CAM = cv2.VideoCapture(CAM_PORT)
-        time.sleep(0.5)
+        time.sleep(1)
         _, image = CAM.read()
         # unload CAM so the microscope display can access data
         CAM.release()
@@ -134,23 +134,6 @@ def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
     return f"https://{BUCKET_S3}.s3.eu-central-1.amazonaws.com/{PICTURES_TEMP_FOLDER}/{filename}"
 
 
-def capture_picture():
-    image = None
-    if PI_CAM_ENABLED is True:
-        PI_CAM.start()
-        time.sleep(1)
-        image = PI_CAM.capture_array()
-        PI_CAM.stop()
-    else:
-        CAM = cv2.VideoCapture(CAM_PORT)
-        time.sleep(0.5)
-        _, image = CAM.read()
-        # unload CAM so the microscope display can access data
-        CAM.release()
-        CAM = None
-    return image
-
-
 def camera_indices():
     # checks the first 10 indexes.
     index = 0
@@ -171,6 +154,9 @@ if __name__ == 'snap':
         BUCKET_S3 = BUCKET_S3_PROD
     else:
         BUCKET_S3 = BUCKET_S3_DEV
+    if PI_CAM_ENABLED:
+        PI_CAM = Picamera2()
+        PI_CAM.create_still_configuration()
     logging.info('--------------------------------------------')
     logging.info('Server started')
     logging.info(f'Environment: {ENVIRONMENT}')
