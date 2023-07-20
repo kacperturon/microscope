@@ -110,18 +110,11 @@ async function init() {
     }
   });
   const env = await resp.text();
-  const resp2 = await fetch(`${server}/camconnected`, {
-    headers: {
-      'ngrok-skip-browser-warning': 'noop',
-    }
-  });
-  const cameraWorking = await resp2.text();
   const serverRunning = await serverOk(); 
 
   form.setAttribute('action', env === 'prod' ? formURLProd : formURLDev);
 
   console.info(`Server is running: ${serverRunning}`);
-  console.info(`Camera is working: ${cameraWorking}`);
   console.info(`Environment: ${env}\nVersion: ${version}`);
 }
 

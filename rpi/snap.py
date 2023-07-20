@@ -26,7 +26,7 @@ S3 = boto3.resource('s3')
 CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 
 CAM_PORT = os.getenv('SNAP_CAM_PORT') or 1
-PI_CAM_ENABLED = True
+PI_CAM_ENABLED = False
 PI_CAM = Picamera2()
 PI_CAM.create_still_configuration()
 # PI_CAM.controls.ExposureTime = 10000
@@ -44,10 +44,6 @@ def create_app():
     @app.route('/env')
     def environment():
         return ENVIRONMENT
-
-    @app.route('/camconnected')
-    def camera_working():
-        return f"{camera_connected()}"
 
     @app.route("/ping")
     def ping_pong():
@@ -99,7 +95,19 @@ def create_app():
 
 
 def take_pic(pictures_folder=PICTURES_FOLDER):
-    image = capture_picture()
+    image = None
+    if PI_CAM_ENABLED is True:
+        PI_CAM.start()
+        time.sleep(1)
+        image = PI_CAM.capture_array()
+        PI_CAM.stop()
+    else:
+        CAM = cv2.VideoCapture(CAM_PORT)
+        time.sleep(0.5)
+        _, image = CAM.read()
+        # unload CAM so the microscope display can access data
+        CAM.release()
+        CAM = None
     if image is not None:
         time_str = datetime.now(ZoneInfo(TIME_ZONE)).strftime('%Y%m%d-%H%M%S')
         image_name = f"{time_str}.jpg"
@@ -143,14 +151,6 @@ def capture_picture():
     return image
 
 
-def camera_connected():
-    try:
-        capture_picture()
-        return True
-    except:
-        return False
-
-
 def camera_indices():
     # checks the first 10 indexes.
     index = 0
@@ -178,6 +178,5 @@ if __name__ == 'snap':
     logging.info(f"Available cameras: {camera_indices()}")
     logging.info(f"PI cam enabled: {PI_CAM_ENABLED}")
     logging.info(f"Camera port used: {CAM_PORT}")
-    logging.info(f"Camera connected: {camera_connected()}")
     logging.info(f"Bucket set to: {BUCKET_S3}")
     app = create_app()
