@@ -25,8 +25,7 @@ PICTURES_FOLDER = 'pictures'
 S3 = boto3.resource('s3')
 CLIENT_S3 = boto3.client('s3', region_name='eu-central-1')
 
-
-CAM_PORT = 0
+CAM_PORT = os.getenv('SNAP_CAM_PORT') or 1
 PI_CAM_ENABLED = True
 PI_CAM = Picamera2()
 PI_CAM.create_still_configuration()
@@ -45,6 +44,10 @@ def create_app():
     @app.route('/env')
     def environment():
         return ENVIRONMENT
+
+    @app.route('/camconnected')
+    def camera_working():
+        return {camera_connected()}
 
     @app.route("/ping")
     def ping_pong():
@@ -96,19 +99,7 @@ def create_app():
 
 
 def take_pic(pictures_folder=PICTURES_FOLDER):
-    image = None
-    if PI_CAM_ENABLED is True:
-        PI_CAM.start()
-        time.sleep(1)
-        image = PI_CAM.capture_array()
-        PI_CAM.stop()
-    else:
-        CAM = cv2.VideoCapture(CAM_PORT)
-        time.sleep(0.5)
-        _, image = CAM.read()
-        # unload CAM so the microscope display can access data
-        CAM.release()
-        CAM = None
+    image = capture_picture()
     if image is not None:
         time_str = datetime.now(ZoneInfo(TIME_ZONE)).strftime('%Y%m%d-%H%M%S')
         image_name = f"{time_str}.jpg"
@@ -135,7 +126,32 @@ def upload_file_S3(file_location, filename, bucket=BUCKET_S3):
     return f"https://{BUCKET_S3}.s3.eu-central-1.amazonaws.com/{PICTURES_TEMP_FOLDER}/{filename}"
 
 
-def returnCameraIndexes():
+def capture_picture():
+    if PI_CAM_ENABLED is True:
+        PI_CAM.start()
+        time.sleep(1)
+        image = PI_CAM.capture_array()
+        PI_CAM.stop()
+        return image
+    else:
+        CAM = cv2.VideoCapture(CAM_PORT)
+        time.sleep(0.5)
+        _, image = CAM.read()
+        # unload CAM so the microscope display can access data
+        CAM.release()
+        CAM = None
+        return image
+
+
+def camera_connected():
+    try:
+        capture_picture()
+        return True
+    except:
+        return False
+
+
+def camera_indices():
     # checks the first 10 indexes.
     index = 0
     arr = []
@@ -159,7 +175,9 @@ if __name__ == 'snap':
     logging.info('Server started')
     logging.info(f'Environment: {ENVIRONMENT}')
     logging.info(f'Version: {VERSION}')
-    logging.info(f"Available cameras: {returnCameraIndexes()}")
+    logging.info(f"Available cameras: {camera_indices()}")
     logging.info(f"PI cam enabled: {PI_CAM_ENABLED}")
+    logging.info(f"Camera port used: {CAM_PORT}")
+    logging.info(f"Camera connected: {camera_connected()}")
     logging.info(f"Bucket set to: {BUCKET_S3}")
     app = create_app()

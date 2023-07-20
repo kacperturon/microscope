@@ -1,4 +1,4 @@
-const server = "https://f24a-2a02-a312-c546-6180-f097-f97b-3422-5944.ngrok-free.app";
+const server = "https://c020-89-64-127-213.ngrok-free.app";
 // const server = "http://192.168.1.154:5000";
 
 const version = `0.01.00`;
@@ -110,11 +110,18 @@ async function init() {
     }
   });
   const env = await resp.text();
+  const resp2 = await fetch(`${server}/camconnected`, {
+    headers: {
+      'ngrok-skip-browser-warning': 'noop',
+    }
+  });
+  const cameraWorking = await resp.text();
   const serverRunning = await serverOk(); 
 
   form.setAttribute('action', env === 'prod' ? formURLProd : formURLDev);
 
   console.info(`Server is running: ${serverRunning}`);
+  console.info(`Camera is working: ${cameraWorking}`);
   console.info(`Environment: ${env}\nVersion: ${version}`);
 }
 
